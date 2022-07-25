@@ -19,9 +19,11 @@
  *    'Tue, 26 Jan 2016 13:48:02 GMT' => Date()
  *    'Sun, 17 May 1998 03:00:00 GMT+01' => Date()
  */
-function parseDataFromRfc2822(/* value */) {
-  throw new Error('Not implemented');
+function parseDataFromRfc2822(value) {
+  return new Date(value);
+  // throw new Error('Not implemented');
 }
+// console.log(parseDataFromRfc2822('December 17, 1995 03:24:00'));
 
 /**
  * Parses an ISO 8601 string date representation into date value
@@ -34,10 +36,12 @@ function parseDataFromRfc2822(/* value */) {
  *    '2016-01-19T16:07:37+00:00'    => Date()
  *    '2016-01-19T08:07:37Z' => Date()
  */
-function parseDataFromIso8601(/* value */) {
-  throw new Error('Not implemented');
-}
+function parseDataFromIso8601(value) {
+  return new Date(value);
 
+  // throw new Error('Not implemented');
+}
+// console.log(parseDataFromIso8601('2016-01-19T16:07:37+00:00'))
 
 /**
  * Returns true if specified date is leap year and false otherwise
@@ -53,10 +57,17 @@ function parseDataFromIso8601(/* value */) {
  *    Date(2012,1,1)    => true
  *    Date(2015,1,1)    => false
  */
-function isLeapYear(/* date */) {
-  throw new Error('Not implemented');
+function isLeapYear(date) {
+  if (date.getFullYear() % 4 === 0) {
+    if (date.getFullYear() % 100 === 0) {
+      if (date.getFullYear() % 400 === 0) return true;
+      return false;
+    }
+    return true;
+  }
+  return false; // throw new Error('Not implemented');
 }
-
+// console.log(isLeapYear(new Date(2000,1,1)))
 
 /**
  * Returns the string representation of the timespan between two dates.
@@ -73,8 +84,10 @@ function isLeapYear(/* date */) {
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,10,0,0,250)     => "00:00:00.250"
  *    Date(2000,1,1,10,0,0),  Date(2000,1,1,15,20,10,453)   => "05:20:10.453"
  */
-function timeSpanToString(/* startDate, endDate */) {
-  throw new Error('Not implemented');
+function timeSpanToString(startDate, endDate) {
+  const time = new Date(endDate.getTime() - startDate.getTime());
+  return time.toISOString().split('T')[1].slice(0, -1);
+  // throw new Error('Not implemented');
 }
 
 
@@ -94,10 +107,21 @@ function timeSpanToString(/* startDate, endDate */) {
  *    Date.UTC(2016,3,5,18, 0) => Math.PI
  *    Date.UTC(2016,3,5,21, 0) => Math.PI/2
  */
-function angleBetweenClockHands(/* date */) {
-  throw new Error('Not implemented');
-}
+function angleBetweenClockHands(date) {
+  const dateObj = new Date(date);
+  // let hours = dateObj.getHours()
+  const time = dateObj.toISOString().split('T')[1].slice(0, -1);
+  let hours = Number(time.split(':')[0]);
+  const mins = Number(time.split(':')[1]);
+  if (hours > 12) hours -= 12;
 
+  let degBetween = Math.abs(0.5 * (60 * hours - 11 * mins));
+  if (degBetween > 180) degBetween %= 180;
+  const rad = (degBetween * (Math.PI / 180));
+  return rad;
+  // throw new Error('Not implemented');
+}
+// console.log(angleBetweenClockHands(Date.UTC(2016, 3, 5, 6, 0)));
 
 module.exports = {
   parseDataFromRfc2822,
