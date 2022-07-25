@@ -318,29 +318,56 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(ccn) {
-  // const newCcn = ccn.replace(/\D/g, '');
-  const newCcn = ccn;
-  let nCheck = 0;
-  let bEven = false;
-
-  for (let n = newCcn.length - 1; n >= 0; n -= 1) {
-    let nDigit = parseInt(newCcn.charAt(n), 10);
-
-    if (bEven) {
-      nDigit *= 2;
-      if ((nDigit) > 9) {
-        nDigit -= 9;
-      }
-    }
-
-    nCheck += nDigit;
-    bEven = !bEven;
-  }
-  console.log(nCheck);
-  return (nCheck % 10) === 0;
+function isCreditCardNumber(/* ccn */) {
+  throw new Error('Not implemented');
 }
+// const regex = new RegExp('^[0-9]{13,19}$');
 
+
+//   const luhnck = (val) => {
+//     let validsum = 0;
+//     let k = 1;
+//     for (let l = val.length - 1; l >= 0; l -= 1) {
+//       let calck = 0;
+//       calck = Number(val.charAt(l)) * k;
+//       if (calck > 9) {
+//         validsum += 1;
+//         calck -= 10;
+//       }
+//       validsum += calck;
+//       if (k === 1) {
+//         k = 2;
+//       } else {
+//         k = 1;
+//       }
+//     }
+//     return (validsum % 10) === 0;
+//   };
+//   return luhnck(ccn);
+// }
+
+// const newCcn = ccn.replace(/\D/g, '');
+// const newCcn = ccn;
+// let nCheck = 0;
+// let bEven = false;
+
+// for (let n = newCcn.length - 1; n >= 0; n -= 1) {
+//   let nDigit = parseInt(newCcn.charAt(n), 10);
+
+//   if (bEven) {
+//     nDigit *= 2;
+//     if ((nDigit) > 9) {
+//       nDigit -= 9;
+//     }
+//   }
+
+//   nCheck += nDigit;
+//   bEven = !bEven;
+// }
+// // console.log(nCheck)
+// return (nCheck % 10) === 0;
+// }
+// console.log(isCreditCardNumber(79927398713));
 /**
  * Returns the digital root of integer:
  *   step1 : find sum of all digits
@@ -355,10 +382,17 @@ function isCreditCardNumber(ccn) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  function summary(number) {
+    if (Number(number) < 9) return Number(number);
+    const str = `${number}`.split('');
+    const sum = str.reduce((pre, cur) => +pre + +cur);
+    return summary(sum);
+  }
+  return summary(num);
+  // throw new Error('Not implemented');
 }
-
+// console.log(getDigitalRoot( 23456))
 
 /**
  * Returns true if the specified string has the balanced brackets and false otherwise.
@@ -381,9 +415,53 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const stack = [];
+  for (let i = 0; i < str.length; i += 1) {
+    const x = str[i];
+    if (x === '{' || x === '(' || x === '[' || x === '<') {
+      // console.log(arr)
+
+      stack.push(x);
+      // continue;
+    }
+
+    // If current character is not opening
+    // bracket, then it must be closing.
+    // So stack cannot be empty at this point.
+    if (stack.length === 0) return false;
+
+    let check;
+    switch (x) {
+      case ')':
+        check = stack.pop();
+        if (check === '{' || check === '[' || check === '<') return false;
+        break;
+
+      case '}':
+        check = stack.pop();
+        if (check === '(' || check === '[' || check === '<') return false;
+        break;
+
+      case ']':
+        check = stack.pop();
+        if (check === '(' || check === '{' || check === '<') return false;
+        break;
+
+      case '>':
+        check = stack.pop();
+        if (check === '{' || check === '[' || check === '(') return false;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  return (stack.length === 0);
 }
+
+// console.log(isBracketsBalanced('{)'))
 
 
 /**
